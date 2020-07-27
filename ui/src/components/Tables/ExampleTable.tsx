@@ -38,21 +38,23 @@ function deleteData(graphId: any) {
 
 var rows = generateData();
 
-function updateData(graphId: any) {
-    var rows = [];
-    var data = getData();
+function updateData(graphId: any, Rows: any[]) {
+    var updatedData=[];
     var newRow = deleteData(graphId);
 
-    for (var row in data) {
-        var currentRow = data[row];
-        if (currentRow.graphId != graphId) {
-            rows.push(createData(currentRow.graphId, currentRow.currentState))
-        } else {
-            console.log(22);
-            rows.push(createData(newRow.graphId, newRow.currentState));
+    for (var row in Rows) {
+        var currentRow = Rows[row];
+        console.log(currentRow);
+        if (currentRow.graphId == graphId) {
+
+            updatedData.push(createData(newRow.graphId, newRow.currentState));
         }
+        else{
+            updatedData.push(createData(currentRow.graphId, currentRow.currentState))
+        }
+        console.log(updatedData)
     }
-    return rows
+    return updatedData;
 }
 
 function getData() {
@@ -68,7 +70,7 @@ function getData() {
 
 export default function ExampleTable() {
     const classes = useStyles();
-    const [Rows, setRows] = useState(rows);
+    const [Rows, setRows] = useState(generateData());
 
     var selectedRow = "";
 
@@ -77,7 +79,7 @@ export default function ExampleTable() {
     }
 
     function handleClick() {
-        setRows(updateData(selectedRow));
+        setRows(updateData(selectedRow, Rows));
     }
 
 
