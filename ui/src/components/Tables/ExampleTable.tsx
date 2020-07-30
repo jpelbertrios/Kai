@@ -22,6 +22,7 @@ export default class ExampleTable extends React.Component<{}, IState> {
         this.setState({
             graphs: await this.getGraphs(),
         })
+        console.log(this.state)
     }
     
     private classes: any = makeStyles({
@@ -31,7 +32,10 @@ export default class ExampleTable extends React.Component<{}, IState> {
     });
 
     private async getGraphs() :Promise<Graph[]> {
-        return RestClient.getAllGraphs();
+
+       const a = await RestClient.getAllGraphs();
+        console.log(a) 
+        return a;
     }
     
     private async deleteAndGetGraphs():Promise<Graph[]> {

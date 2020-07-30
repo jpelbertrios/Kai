@@ -1,16 +1,22 @@
 import {mount} from 'enzyme';
 import ExampleTable from '../../../src/components/Tables/ExampleTable';
 import React from 'react';
+import { RestClient } from '../../../src/rest/rest-client';
+import { Graph } from '../../../src/domain/graph';
+
 describe('When ExampleTable mounts', () => {
+
     const wrapper = mount(<ExampleTable/>);
     it('should display only 1 table element', () => {
         const table = wrapper.find('table');
         expect(table).toHaveLength(1);
     });
+
     it('should display only 2 columns in the table element', () => {
         const tableHead = wrapper.find('th');
         expect(tableHead).toHaveLength(2);
     });
+
     it('should display Graph Id and Current State Columns', () => {
         const cols = [
             {name: 'Graph ID'},
@@ -21,11 +27,17 @@ describe('When ExampleTable mounts', () => {
             expect(th.text()).toEqual(cols[idx].name);
         });
     });
+
     it('should only have 1 table body', () => {
         const tableBody = wrapper.find('tbody');
         expect(tableBody).toHaveLength(1);
     });
-    it('should get all the graphs and display it in the table', () =>{
+
+    it('should get all the graphs and display it in the table', async () =>{
+        // const restClient =  RestClient.getAllGraphs.prototype.mockResolvedValue('iusdhfusaf');
+        RestClient.getAllGraphs.prototype.mockReturnValue(new Promise(() => [ new Graph('testId', 'nefonf') ]));
+        await wrapper.update();
+        
         const rows = wrapper.find('tbody').find('tr');
         expect(rows).toHaveLength(1);
         rows.forEach((tr, rowIndex) => {
@@ -35,41 +47,19 @@ describe('When ExampleTable mounts', () => {
         })
     })
 });
+
 // describe('When ExampleTable mounts', ()=> {
 //   it('should only have 1 table body', ()=>{
 //     const wrapper = mount(<ExampleTable />);
 //     const tableBody= wrapper.find('tbody');
 //     expect(tableBody).toHaveLength(1);
-//
-//
 //   });
 // });
+
 // describe('When ExampleTable mounts', ()=> {
 //   it('should get and display all graphs', ()=>{
 //     const wrapper = shallow(<ExampleTable />);
-//
+
 //     expect(wrapper.find('').html()).toEqual('owenfiwof');
 //   });
 // });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
