@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`When Page1 mounts should render correctly in "debug" mode 1`] = `
+<WithStyles(ForwardRef(Grid))
+  className="makeStyles-root-1"
+  container={true}
+  justify="center"
+>
+  <WithStyles(ForwardRef(Typography))
+    variant="h3"
+  >
+    Page 2
+  </WithStyles(ForwardRef(Typography))>
+</WithStyles(ForwardRef(Grid))>
+`;
+
+exports[`When Page1 mounts should render without errors 1`] = `
+<WithStyles(ForwardRef(Grid))
+  className="makeStyles-root-1"
+  container={true}
+  justify="center"
+>
+  <WithStyles(ForwardRef(Typography))
+    variant="h3"
+  >
+    Page 2
+  </WithStyles(ForwardRef(Typography))>
+</WithStyles(ForwardRef(Grid))>
+`;

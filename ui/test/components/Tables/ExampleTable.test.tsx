@@ -1,9 +1,12 @@
 import {mount} from 'enzyme';
 import ExampleTable from '../../../src/components/Tables/ExampleTable';
 import React from 'react';
-import { RestClient } from '../../../src/rest/rest-client';
-import { Graph } from '../../../src/domain/graph';
+import {Graph} from '../../../src/domain/graph';
+import {RestClient} from '../../../src/rest/rest-client';
 
+beforeEach(() => {
+    fetchMock.resetMocks();
+});
 describe('When ExampleTable mounts', () => {
 
     const wrapper = mount(<ExampleTable/>);
@@ -32,34 +35,51 @@ describe('When ExampleTable mounts', () => {
         const tableBody = wrapper.find('tbody');
         expect(tableBody).toHaveLength(1);
     });
+    it('should display the data correctly from the api', async () => {
+        const mockSuccessResponse = [
+            {
+                graphId: "roadTraffic",
+                currentState: "DEPLOYED"
+            }, {
+                graphId: "basicGraph",
+                currentState: "DELETION_QUEUED"
+            }];
 
-    it('should get all the graphs and display it in the table', async () =>{
-        // const restClient =  RestClient.getAllGraphs.prototype.mockResolvedValue('iusdhfusaf');
-        RestClient.getAllGraphs.prototype.mockReturnValue(new Promise(() => [ new Graph('testId', 'nefonf') ]));
+        fetchMock.mockResponseOnce(JSON.stringify(mockSuccessResponse));
+        const actual: Graph[] = await RestClient.getAllGraphs();
         await wrapper.update();
-        
-        const rows = wrapper.find('tbody').find('tr');
-        expect(rows).toHaveLength(1);
-        rows.forEach((tr, rowIndex) => {
-            const cells = rows.find('td');
-            expect(cells.at(0).text()).toEqual("testId1");
-            expect(cells.at(1).text()).toEqual("deployed");
-        })
+        wrapper.setState({graphs: actual});
+
+        const rows = wrapper.find('table').find('tbody').find('tr');
+        expect(rows).toHaveLength(actual.length);
+        expect(rows.at(0).find('th').text()).toBe("roadTraffic");
+        expect(rows.at(0).find('td').text()).toBe("DEPLOYED");
+        expect(rows.at(1).find('th').text()).toBe("basicGraph");
+        expect(rows.at(1).find('td').text()).toBe("DELETION_QUEUED")
+
+
     })
+    it('should get selected rows graphId', () => {
+        const row = wrapper.find('table').find('tbody').find('tr').at(0);
+        row.simulate('click');
+        const selectedRow = wrapper.state('selectedRow');
+        expect(selectedRow).toBe('roadTraffic');
+
+    });
+    it('should get correct response from RestClient when Delete Graph button is clicked', async () => {
+        const deleteGraph = wrapper.find('button');
+        const mockSuccessResponse = [{
+            graphId: "roadTraffic",
+            currentState: "DELETION_IN_PROGRESS",
+        }];
+        fetchMock.mockResponseOnce(JSON.stringify(mockSuccessResponse));
+        deleteGraph.simulate('click');
+        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledWith("/graphs/roadTraffic", {"method": "delete"});
+
+
+    })
+
+
 });
 
-// describe('When ExampleTable mounts', ()=> {
-//   it('should only have 1 table body', ()=>{
-//     const wrapper = mount(<ExampleTable />);
-//     const tableBody= wrapper.find('tbody');
-//     expect(tableBody).toHaveLength(1);
-//   });
-// });
-
-// describe('When ExampleTable mounts', ()=> {
-//   it('should get and display all graphs', ()=>{
-//     const wrapper = shallow(<ExampleTable />);
-
-//     expect(wrapper.find('').html()).toEqual('owenfiwof');
-//   });
-// });
