@@ -3,11 +3,16 @@ import { Button, Container, CssBaseline, Grid, makeStyles, TextField } from '@ma
 import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 import Toolbar from '@material-ui/core/Toolbar';
 
-interface IState {}
+interface IState {
+    types: string;
+}
 
 export default class TypesBuilder extends React.Component<{}, IState> {
     constructor(props: object) {
         super(props);
+        this.state = {
+            types: '',
+        };
     }
 
     private disableSubmitButton(): boolean {
@@ -76,6 +81,25 @@ export default class TypesBuilder extends React.Component<{}, IState> {
                     >
                         Add Type
                     </Button>
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        id="types-json"
+                        style={{ width: 400 }}
+                        value={this.state.types}
+                        disabled={false}
+                        name="schema-types"
+                        label="Schema Types JSON"
+                        required
+                        multiline
+                        rows={5}
+                        variant="outlined"
+                        onChange={(event) => {
+                            this.setState({
+                                types: event.target.value,
+                            });
+                        }}
+                    />
                 </Grid>
             </Grid>
         );
